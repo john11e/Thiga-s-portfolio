@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Name - Portfolio</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #FF3366;
+            --color-secondary: #6C5CE7;
+            --color-accent: #00D9FF;
+            --color-dark: #0F0F1E;
+            --color-light: #F8F9FA;
+            --font-display: 'Bebas Neue', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-dark);
+            color: var(--color-light);
+            overflow-x: hidden;
+        }
+
+        #root {
+            position: relative;
+        }
+
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.3;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bg-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .shape-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--color-primary);
+            top: -10%;
+            right: -5%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--color-secondary);
+            bottom: -10%;
+            left: -5%;
+            animation-delay: -5s;
+        }
+
+        .shape-3 {
+            width: 300px;
+            height: 300px;
+            background: var(--color-accent);
+            top: 50%;
+            left: 50%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -30px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 2rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(4rem, 12vw, 10rem);
+            line-height: 0.9;
+            letter-spacing: 0.02em;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            font-weight: 300;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1.2rem 3rem;
+            background: var(--color-primary);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out 0.6s both;
+            border: 2px solid var(--color-primary);
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            background: transparent;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 51, 102, 0.3);
+        }
+
+        .section {
+            padding: 6rem 2rem;
+            position: relative;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 8vw, 6rem);
+            margin-bottom: 3rem;
+            text-align: center;
+            letter-spacing: 0.05em;
+        }
+
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .about-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .about-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+            border-color: var(--color-primary);
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+
+        .experience-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .experience-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid var(--color-primary);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .experience-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 51, 102, 0.1), transparent);
+            transition: width 0.3s ease;
+        }
+
+        .experience-item:hover::before {
+            width: 100%;
+        }
+
+        .experience-item:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .experience-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .experience-company {
+            font-size: 1.2rem;
+            color: var(--color-accent);
+            font-weight: 400;
+        }
+
+        .experience-date {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .experience-description {
+            line-height: 1.7;
+            opacity: 0.85;
+        }
+
+        .skills-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .skill-card {
+            background: linear-gradient(135deg, rgba(255, 51, 102, 0.1), rgba(108, 92, 231, 0.1));
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 51, 102, 0.3);
+            border-color: var(--color-primary);
+        }
+
+        .skill-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-level {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-text {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            line-height: 1.8;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: var(--color-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 51, 102, 0.3);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        .scroll-arrow {
+            width: 30px;
+            height: 30px;
+            border-left: 3px solid var(--color-primary);
+            border-bottom: 3px solid var(--color-primary);
+            transform: rotate(-45deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="grain-overlay"></div>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const Portfolio = () => {
+            const [activeSection, setActiveSection] = useState('hero');
+
+            const scrollToSection = (sectionId) => {
+                document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+            };
+
+            const experiences = [
+                {
+                    title: 'Senior Position Title',
+                    company: 'Company Name',
+                    date: '2022 - Present',
+                    description: 'Led cross-functional teams to deliver innovative solutions. Managed projects from conception to deployment, resulting in significant improvements in efficiency and user satisfaction.'
+                },
+                {
+                    title: 'Mid-Level Position Title',
+                    company: 'Previous Company',
+                    date: '2019 - 2022',
+                    description: 'Developed and implemented strategic initiatives that enhanced operational processes. Collaborated with stakeholders to achieve business objectives and drive growth.'
+                },
+                {
+                    title: 'Junior Position Title',
+                    company: 'Earlier Company',
+                    date: '2017 - 2019',
+                    description: 'Contributed to various projects, gaining expertise in industry best practices. Assisted in the successful completion of multiple high-priority assignments.'
+                }
+            ];
+
+            const skills = [
+                { name: 'Leadership', level: 'Expert' },
+                { name: 'Project Management', level: 'Advanced' },
+                { name: 'Strategic Planning', level: 'Expert' },
+                { name: 'Communication', level: 'Expert' },
+                { name: 'Data Analysis', level: 'Advanced' },
+                { name: 'Problem Solving', level: 'Expert' },
+                { name: 'Team Building', level: 'Advanced' },
+                { name: 'Innovation', level: 'Advanced' }
+            ];
+
+            const stats = [
+                { number: '10+', label: 'Years Experience' },
+                { number: '50+', label: 'Projects Completed' },
+                { number: '15+', label: 'Team Members Led' },
+                { number: '100%', label: 'Client Satisfaction' }
+            ];
+
+            return (
+                <>
+                    <section className="hero" id="hero">
+                        <div className="bg-shapes">
+                            <div className="shape shape-1"></div>
+                            <div className="shape shape-2"></div>
+                            <div className="shape shape-3"></div>
+                        </div>
+                        <div className="hero-content">
+                            <h1 className="hero-title">YOUR NAME</h1>
+                            <p className="hero-subtitle">Professional Title | Industry Expert | Innovator</p>
+                            <a className="cta-button" onClick={() => scrollToSection('contact')}>
+                                Get In Touch
+                            </a>
+                        </div>
+                        <div className="scroll-indicator" onClick={() => scrollToSection('about')}>
+                            <div className="scroll-arrow"></div>
+                        </div>
+                    </section>
+
+                    <section className="section" id="about">
+                        <h2 className="section-title">ABOUT ME</h2>
+                        <div className="about-container">
+                            <div className="about-text">
+                                <p>
+                                    I'm a passionate professional with over a decade of experience driving innovation and excellence. 
+                                    My approach combines strategic thinking with hands-on execution to deliver results that matter.
+                                </p>
+                                <p>
+                                    Throughout my career, I've had the privilege of working with talented teams, leading transformative 
+                                    projects, and creating lasting impact in everything I do.
+                                </p>
+                                <p>
+                                    When I'm not working, you'll find me exploring new technologies, mentoring aspiring professionals, 
+                                    or pursuing creative ventures that push boundaries.
+                                </p>
+                            </div>
+                            <div className="stats-grid">
+                                {stats.map((stat, index) => (
+                                    <div key={index} className="stat-card">
+                                        <div className="stat-number">{stat.number}</div>
+                                        <div className="stat-label">{stat.label}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="section" id="experience">
+                        <h2 className="section-title">EXPERIENCE</h2>
+                        <div className="experience-container">
+                            {experiences.map((exp, index) => (
+                                <div key={index} className="experience-item">
+                                    <div className="experience-header">
+                                        <div>
+                                            <h3 className="experience-title">{exp.title}</h3>
+                                            <div className="experience-company">{exp.company}</div>
+                                        </div>
+                                        <div className="experience-date">{exp.date}</div>
+                                    </div>
+                                    <p className="experience-description">{exp.description}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    <section className="section" id="skills">
+                        <h2 className="section-title">SKILLS</h2>
+                        <div className="skills-container">
+                            {skills.map((skill, index) => (
+                                <div key={index} className="skill-card">
+                                    <div className="skill-name">{skill.name}</div>
+                                    <div className="skill-level">{skill.level}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    <section className="section" id="contact">
+                        <h2 className="section-title">LET'S CONNECT</h2>
+                        <div className="contact-container">
+                            <p className="contact-text">
+                                I'm always excited to connect with like-minded professionals, explore new opportunities, 
+                                or discuss innovative ideas. Let's create something amazing together.
+                            </p>
+                            <div className="contact-links">
+                                <a href="mailto:your.email@example.com" className="contact-link">
+                                    📧 Email
+                                </a>
+                                <a href="https://linkedin.com/in/yourprofile" className="contact-link" target="_blank">
+                                    💼 LinkedIn
+                                </a>
+                                <a href="https://github.com/yourprofile" className="contact-link" target="_blank">
+                                    🔗 GitHub
+                                </a>
+                                <a href="tel:+1234567890" className="contact-link">
+                                    📱 Phone
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+                </>
+            );
+        };
+
+        ReactDOM.render(<Portfolio />, document.getElementById('root'));
+    </script>
+</body>
+</html>
